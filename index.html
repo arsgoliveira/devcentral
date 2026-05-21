@@ -1,0 +1,168 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portal TI Hidromares</title>
+    <meta name="description" content="Portal central para acesso aos projetos e dashboards da equipe de TI." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="bg-glow" aria-hidden="true"></div>
+
+    <header class="hero">
+      <p class="eyebrow">Equipe de TI</p>
+      <h1>Portal Central Hidromares</h1>
+      <p class="hero-copy">
+        Um unico link para abrir todos os projetos da equipe de forma rapida, organizada e segura.
+      </p>
+    </header>
+
+    <main class="container">
+      <section class="controls">
+        <div class="controls-top">
+          <div class="search-wrap">
+            <label class="search-label" for="searchInput">Buscar projeto</label>
+            <input id="searchInput" type="search" placeholder="Ex.: dashboard, matriz, hidromares" />
+          </div>
+
+          <button id="settingsToggleBtn" class="settings-btn" type="button" aria-expanded="false" aria-controls="settingsPanel">
+            Configuracoes
+          </button>
+        </div>
+
+        <div class="filter-row" role="group" aria-label="Filtros de visibilidade">
+          <button class="filter active" data-filter="all" type="button">Todos</button>
+          <button class="filter" data-filter="public" type="button">Publicos</button>
+          <button class="filter" data-filter="restricted" type="button">Restritos</button>
+        </div>
+      </section>
+
+      <section class="stats" aria-live="polite">
+        <div class="stat">
+          <span>Total</span>
+          <strong id="statTotal">0</strong>
+        </div>
+        <div class="stat">
+          <span>Publicos</span>
+          <strong id="statPublic">0</strong>
+        </div>
+        <div class="stat">
+          <span>Restritos</span>
+          <strong id="statRestricted">0</strong>
+        </div>
+        <div class="stat">
+          <span>Desbloqueados</span>
+          <strong id="statUnlocked">0</strong>
+        </div>
+      </section>
+
+      <section id="projectsGrid" class="grid" aria-live="polite"></section>
+      <p id="emptyState" class="empty" hidden>Nenhum projeto encontrado para esse filtro.</p>
+    </main>
+
+    <div id="settingsBackdrop" class="settings-backdrop" hidden></div>
+
+    <aside id="settingsPanel" class="settings-panel" aria-hidden="true">
+      <div class="settings-header">
+        <h2>Configuracoes</h2>
+        <button id="closeSettingsBtn" class="panel-close" type="button" aria-label="Fechar configuracoes">x</button>
+      </div>
+
+      <p class="settings-copy">Gerencie rapidamente os links do portal sem mexer em codigo.</p>
+
+      <div class="settings-actions">
+        <button id="openCreateDialogBtn" class="primary-action" type="button">Incluir link</button>
+        <button id="clearUnlocksBtn" class="secondary-action" type="button">Limpar desbloqueios</button>
+      </div>
+
+      <div class="settings-meta">
+        <div>
+          <span>Projetos no portal</span>
+          <strong id="settingsTotalProjects">0</strong>
+        </div>
+        <div>
+          <span>Projetos restritos</span>
+          <strong id="settingsRestrictedProjects">0</strong>
+        </div>
+      </div>
+    </aside>
+
+    <dialog id="projectDialog" class="project-dialog">
+      <form id="projectForm" method="dialog">
+        <h2 id="projectDialogTitle">Incluir projeto</h2>
+
+        <label for="projectUrl">Link do projeto</label>
+        <div class="url-row">
+          <input id="projectUrl" type="url" placeholder="https://seu-projeto.netlify.app" required />
+          <button id="autoFillBtn" class="secondary-action" type="button">Preencher</button>
+        </div>
+
+        <label for="projectName">Nome</label>
+        <input id="projectName" type="text" placeholder="Nome exibido no card" required />
+
+        <label for="projectDescription">Descricao</label>
+        <textarea id="projectDescription" rows="3" placeholder="Resumo curto do projeto"></textarea>
+
+        <div class="row-2">
+          <div>
+            <label for="projectVisibility">Visibilidade</label>
+            <select id="projectVisibility">
+              <option value="public">Publico</option>
+              <option value="restricted">Restrito (com senha)</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="projectTags">Tags</label>
+            <input id="projectTags" type="text" placeholder="dashboard, interno" />
+          </div>
+        </div>
+
+        <div id="restrictedFields" class="restricted-fields" hidden>
+          <div class="row-2">
+            <div>
+              <label for="projectPassword">Senha de acesso</label>
+              <input id="projectPassword" type="password" autocomplete="new-password" placeholder="Obrigatoria para restrito" />
+            </div>
+            <div>
+              <label for="projectPasswordHint">Dica de senha</label>
+              <input id="projectPasswordHint" type="text" placeholder="Ex.: padrao interno" />
+            </div>
+          </div>
+        </div>
+
+        <p id="projectDialogMessage" class="dialog-message" aria-live="polite"></p>
+
+        <div class="dialog-actions project-actions">
+          <button id="deleteProjectBtn" class="danger-action" type="button" hidden>Remover</button>
+          <button id="cancelProjectBtn" class="btn-secondary" type="button">Cancelar</button>
+          <button id="saveProjectBtn" class="btn-primary" type="submit">Salvar</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="passwordDialog" class="password-dialog">
+      <form id="passwordForm" method="dialog">
+        <h2>Acesso restrito</h2>
+        <p id="passwordProjectName"></p>
+
+        <label for="passwordInput">Senha</label>
+        <input id="passwordInput" type="password" autocomplete="current-password" required />
+
+        <p id="passwordHint" class="hint"></p>
+        <p id="passwordError" class="error" aria-live="assertive"></p>
+
+        <div class="dialog-actions">
+          <button value="cancel" class="btn-secondary" type="button" id="cancelPasswordBtn">Cancelar</button>
+          <button value="default" class="btn-primary" type="submit">Entrar</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

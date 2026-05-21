@@ -1,0 +1,20 @@
+[
+  {
+    "id": "dashboard-matriz-eisenhower",
+    "name": "Dashboard Matriz Eisenhower",
+    "description": "Painel de organizacao e priorizacao por matriz Eisenhower.",
+    "url": "https://dashboard-matriz-eisenhower.netlify.app/",
+    "visibility": "public",
+    "tags": ["dashboard", "priorizacao", "eisenhower"],
+    "updatedAt": "2026-05-21"
+  },
+  {
+    "id": "hidromares-dashboard",
+    "name": "Hidromares Dashboard",
+    "description": "Dashboard operacional de acompanhamento da equipe e chamados.",
+    "url": "https://hidromares-dashboard.netlify.app/",
+    "visibility": "public",
+    "tags": ["hidromares", "operacional", "jira"],
+    "updatedAt": "2026-05-21"
+  }
+]

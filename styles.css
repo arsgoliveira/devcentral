@@ -166,6 +166,7 @@ button:active {
 .secondary-action,
 .filter,
 .open-btn,
+.copy-btn,
 .edit-btn,
 .delete-btn,
 .btn-primary,
@@ -193,11 +194,18 @@ button:active {
 
 .secondary-action,
 .filter,
+.copy-btn,
 .edit-btn,
 .btn-secondary,
 .panel-close {
   color: var(--text);
   background: var(--surface-2);
+}
+
+.danger-outline {
+  background: transparent;
+  border: 1px solid rgba(255, 107, 107, 0.4) !important;
+  color: #ffcaca;
 }
 
 .danger-action,
@@ -336,6 +344,13 @@ button:active {
   border: 1px solid rgba(83, 219, 203, 0.4);
 }
 
+.badge.cat-dev      { background: rgba(99,179,237,0.18); color: #90cdf4; border: 1px solid rgba(99,179,237,0.45); }
+.badge.cat-ia       { background: rgba(154,117,240,0.18); color: #c4b5fd; border: 1px solid rgba(154,117,240,0.45); }
+.badge.cat-deploy   { background: rgba(31,196,181,0.18); color: #7ef2e6; border: 1px solid rgba(31,196,181,0.45); }
+.badge.cat-cloud    { background: rgba(255,209,102,0.18); color: #ffe2aa; border: 1px solid rgba(255,209,102,0.45); }
+.badge.cat-social   { background: rgba(252,129,74,0.18); color: #fdba8c; border: 1px solid rgba(252,129,74,0.45); }
+.badge.cat-dashboard{ background: rgba(160,210,100,0.18); color: #bef264; border: 1px solid rgba(160,210,100,0.45); }
+
 .desc {
   color: var(--text-soft);
   font-size: 14px;
@@ -376,12 +391,14 @@ button:active {
 }
 
 .open-btn,
+.copy-btn,
 .edit-btn,
 .delete-btn {
   padding: 7px 10px;
   font-size: 13px;
 }
 
+.copy-btn,
 .edit-btn {
   background: #355975;
   color: var(--text);
@@ -658,15 +675,11 @@ button:active {
 }
 
 .open-btn,
+.copy-btn,
 .edit-btn,
 .delete-btn {
   width: 100%;
   min-height: 42px;
-}
-
-.delete-btn,
-.delete-placeholder {
-  grid-column: 1 / -1;
 }
 
 .delete-placeholder {
@@ -680,12 +693,38 @@ button:active {
     grid-template-columns: 1fr;
   }
 
-  .delete-btn,
-  .delete-placeholder {
-    grid-column: auto;
-  }
-
   .delete-placeholder {
     display: none;
   }
+}
+
+.category-filter-row {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(42, 79, 105, 0.5);
+}
+
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--surface-2);
+  border: 1px solid var(--accent);
+  color: var(--accent-2);
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+  z-index: 200;
+  pointer-events: none;
+  white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }

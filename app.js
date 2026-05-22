@@ -3,6 +3,9 @@ const STORAGE_UNLOCKED_KEY = "dc-portal-unlocked-v1";
 const STORAGE_CUSTOM_KEY = "dc-portal-custom-projects-v1";
 const STORAGE_OVERRIDES_KEY = "dc-portal-overrides-v1";
 
+const VALID_CATEGORIES = new Set(["dev", "ia", "deploy", "cloud", "social", "dashboard"]);
+const CATEGORY_LABELS = { dev: "Dev", ia: "IA", deploy: "Deploy", cloud: "Cloud", social: "Social", dashboard: "Dashboard" };
+
 const searchInput = document.getElementById("searchInput");
 const grid = document.getElementById("projectsGrid");
 const emptyState = document.getElementById("emptyState");
@@ -44,15 +47,22 @@ const passwordProjectName = document.getElementById("passwordProjectName");
 const passwordHint = document.getElementById("passwordHint");
 const passwordError = document.getElementById("passwordError");
 const cancelPasswordBtn = document.getElementById("cancelPasswordBtn");
+const projectCategoryInput = document.getElementById("projectCategory");
+const exportProjectsBtn = document.getElementById("exportProjectsBtn");
+const importProjectsBtn = document.getElementById("importProjectsBtn");
+const importFileInput = document.getElementById("importFileInput");
+const toastEl = document.getElementById("toast");
 
 let baseProjects = [];
 let customProjects = [];
 let projectOverrides = {};
 
 let currentFilter = "all";
+let currentCategoryFilter = "all";
 let currentLockedProject = null;
 let editingContext = null;
 let settingsOpen = false;
+let toastTimer = null;
 
 const unlockedProjects = new Set(readUnlockedProjects());
 
@@ -94,6 +104,18 @@ function wireEvents() {
   settingsBackdrop.addEventListener("click", closeSettingsPanel);
   openCreateDialogBtn.addEventListener("click", () => openProjectDialog("create"));
   clearUnlocksBtn.addEventListener("click", clearUnlocks);
+  exportProjectsBtn.addEventListener("click", exportProjects);
+  importProjectsBtn.addEventListener("click", () => importFileInput.click());
+  importFileInput.addEventListener("change", onImportFile);
+
+  document.querySelectorAll(".cat-filter").forEach((button) => {
+    button.addEventListener("click", () => {
+      document.querySelectorAll(".cat-filter").forEach((btn) => btn.classList.remove("active"));
+      button.classList.add("active");
+      currentCategoryFilter = button.dataset.category;
+      render();
+    });
+  });
 
   projectVisibilityInput.addEventListener("change", toggleRestrictedFields);
   autoFillBtn.addEventListener("click", () => autoFillFromUrl(true));
@@ -136,6 +158,9 @@ function render() {
 
     const lockBadge = restricted && !unlocked ? `<span class="badge locked">BLOQUEADO</span>` : "";
     const customBadge = project.source === "custom" ? `<span class="badge custom">PERSONALIZADO</span>` : "";
+    const categoryBadge = project.category
+      ? `<span class="badge cat-${escapeHtml(project.category)}">${escapeHtml(CATEGORY_LABELS[project.category] || project.category)}</span>`
+      : "";
 
     card.innerHTML = `
       <div class="card-header">
@@ -148,6 +173,7 @@ function render() {
 
       <div class="meta">
         ${visibilityBadge}
+        ${categoryBadge}
         ${lockBadge}
         ${customBadge}
       </div>
@@ -160,6 +186,7 @@ function render() {
         <span class="date">Atualizado: ${formatDate(project.updatedAt)}</span>
         <div class="card-actions">
           <button class="open-btn" type="button">${restricted && !unlocked ? "Desbloquear" : "Acessar"}</button>
+          <button class="copy-btn" type="button">Copiar</button>
           <button class="edit-btn" type="button">Editar</button>
           ${project.source === "custom" ? `<button class="delete-btn" type="button">Remover</button>` : `<span class="delete-placeholder" aria-hidden="true"></span>`}
         </div>
@@ -167,6 +194,9 @@ function render() {
     `;
 
     card.querySelector(".open-btn")?.addEventListener("click", () => openProject(project));
+    card.querySelector(".copy-btn")?.addEventListener("click", () => {
+      navigator.clipboard.writeText(project.url).then(() => showToast("Link copiado!"));
+    });
     card.querySelector(".edit-btn")?.addEventListener("click", () => openProjectDialog("edit", project));
     card.querySelector(".delete-btn")?.addEventListener("click", () => removeCustomProject(project.id));
 
@@ -217,12 +247,17 @@ function buildProjects() {
 function matchFilter(project) {
   const restricted = project.visibility === "restricted";
 
-  if (currentFilter === "all") return true;
-  if (currentFilter === "public") return !restricted;
-  if (currentFilter === "restricted") return restricted;
-  if (currentFilter === "unlocked") return restricted && unlockedProjects.has(project.id);
+  const matchesVisibility = (() => {
+    if (currentFilter === "all") return true;
+    if (currentFilter === "public") return !restricted;
+    if (currentFilter === "restricted") return restricted;
+    if (currentFilter === "unlocked") return restricted && unlockedProjects.has(project.id);
+    return true;
+  })();
 
-  return true;
+  const matchesCategory = currentCategoryFilter === "all" || project.category === currentCategoryFilter;
+
+  return matchesVisibility && matchesCategory;
 }
 
 function openProject(project) {
@@ -291,6 +326,7 @@ function openProjectDialog(mode, project = null) {
     projectNameInput.value = project.name || "";
     projectDescriptionInput.value = project.description || "";
     projectVisibilityInput.value = project.visibility || "public";
+    projectCategoryInput.value = project.category || "";
     projectTagsInput.value = (project.tags || []).join(", ");
     projectPasswordInput.value = "";
     projectPasswordHintInput.value = project.passwordHint || "";
@@ -300,6 +336,7 @@ function openProjectDialog(mode, project = null) {
     projectDialogTitle.textContent = "Incluir projeto";
     projectForm.reset();
     projectVisibilityInput.value = "public";
+    projectCategoryInput.value = "";
     deleteProjectBtn.hidden = true;
     projectUrlInput.value = "";
     projectNameInput.value = "";
@@ -386,6 +423,8 @@ function onSaveProject(event) {
   const visibility = projectVisibilityInput.value === "restricted" ? "restricted" : "public";
   const currentProject = editingContext ? findProjectById(editingContext.id, editingContext.source) : null;
 
+  const selectedCategory = projectCategoryInput.value;
+
   const payload = {
     name,
     description: projectDescriptionInput.value.trim() || `Acesso ao projeto ${name}.`,
@@ -394,6 +433,10 @@ function onSaveProject(event) {
     tags: parseTags(projectTagsInput.value),
     updatedAt: todayISO(),
   };
+
+  if (selectedCategory && VALID_CATEGORIES.has(selectedCategory)) {
+    payload.category = selectedCategory;
+  }
 
   if (visibility === "restricted") {
     const typedPassword = projectPasswordInput.value;
@@ -580,6 +623,9 @@ function sanitizeProject(project, source) {
 
   const visibility = String(project.visibility || "public") === "restricted" ? "restricted" : "public";
 
+  const rawCategory = String(project.category || "").trim();
+  const category = VALID_CATEGORIES.has(rawCategory) ? rawCategory : null;
+
   const sanitized = {
     id,
     name,
@@ -590,6 +636,8 @@ function sanitizeProject(project, source) {
     updatedAt: isDateLike(project.updatedAt) ? String(project.updatedAt) : todayISO(),
     source,
   };
+
+  if (category) sanitized.category = category;
 
   if (visibility === "restricted") {
     if (project.password) sanitized.password = String(project.password);
@@ -674,4 +722,59 @@ function escapeHtml(text) {
     .replace(/>/g, "&gt;")
     .replace(/\"/g, "&quot;")
     .replace(/'/g, "&#39;");
+}
+
+function showToast(message) {
+  if (toastTimer) clearTimeout(toastTimer);
+  toastEl.textContent = message;
+  toastEl.classList.add("visible");
+  toastTimer = setTimeout(() => {
+    toastEl.classList.remove("visible");
+    toastTimer = null;
+  }, 2400);
+}
+
+function exportProjects() {
+  const all = buildProjects().map(({ source: _source, ...rest }) => rest);
+  const json = JSON.stringify(all, null, 2);
+  const blob = new Blob([json], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = `devcentral-backup-${todayISO()}.json`;
+  anchor.click();
+  URL.revokeObjectURL(url);
+  showToast("Backup exportado com sucesso.");
+}
+
+function onImportFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const imported = JSON.parse(String(e.target.result));
+      if (!Array.isArray(imported)) throw new Error("Formato invalido.");
+
+      const existing = new Set(buildProjects().map((p) => p.id));
+      const sanitized = sanitizeProjectList(imported, "custom");
+      let added = 0;
+
+      sanitized.forEach((project) => {
+        if (!existing.has(project.id)) {
+          customProjects.push(project);
+          added++;
+        }
+      });
+
+      persistCustomProjects();
+      render();
+      showToast(added > 0 ? `${added} projeto(s) importado(s).` : "Nenhum projeto novo encontrado.");
+    } catch {
+      showToast("Erro ao importar: arquivo invalido.");
+    }
+    event.target.value = "";
+  };
+  reader.readAsText(file);
 }

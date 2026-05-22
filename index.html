@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -38,6 +39,16 @@
           <button class="filter active" data-filter="all" type="button">Todos</button>
           <button class="filter" data-filter="public" type="button">Publicos</button>
           <button class="filter" data-filter="restricted" type="button">Restritos</button>
+        </div>
+
+        <div class="filter-row category-filter-row" role="group" aria-label="Filtros por categoria">
+          <button class="filter cat-filter active" data-category="all" type="button">Todas</button>
+          <button class="filter cat-filter" data-category="dev" type="button">Dev</button>
+          <button class="filter cat-filter" data-category="ia" type="button">IA</button>
+          <button class="filter cat-filter" data-category="deploy" type="button">Deploy</button>
+          <button class="filter cat-filter" data-category="cloud" type="button">Cloud</button>
+          <button class="filter cat-filter" data-category="social" type="button">Social</button>
+          <button class="filter cat-filter" data-category="dashboard" type="button">Dashboard</button>
         </div>
       </section>
 
@@ -76,7 +87,10 @@
 
       <div class="settings-actions">
         <button id="openCreateDialogBtn" class="primary-action" type="button">Incluir link</button>
-        <button id="clearUnlocksBtn" class="secondary-action" type="button">Limpar desbloqueios</button>
+        <button id="exportProjectsBtn" class="secondary-action" type="button">Exportar backup</button>
+        <button id="importProjectsBtn" class="secondary-action" type="button">Importar backup</button>
+        <button id="clearUnlocksBtn" class="secondary-action danger-outline" type="button">Limpar desbloqueios</button>
+        <input id="importFileInput" type="file" accept=".json" hidden />
       </div>
 
       <div class="settings-meta">
@@ -117,10 +131,21 @@
           </div>
 
           <div>
-            <label for="projectTags">Tags</label>
-            <input id="projectTags" type="text" placeholder="dashboard, interno" />
+            <label for="projectCategory">Categoria</label>
+            <select id="projectCategory">
+              <option value="">Sem categoria</option>
+              <option value="dev">Dev</option>
+              <option value="ia">IA</option>
+              <option value="deploy">Deploy</option>
+              <option value="cloud">Cloud</option>
+              <option value="social">Social</option>
+              <option value="dashboard">Dashboard</option>
+            </select>
           </div>
         </div>
+
+        <label for="projectTags">Tags</label>
+        <input id="projectTags" type="text" placeholder="dashboard, interno" />
 
         <div id="restrictedFields" class="restricted-fields" hidden>
           <div class="row-2">
@@ -162,6 +187,8 @@
         </div>
       </form>
     </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
     <script src="./app.js" type="module"></script>
   </body>

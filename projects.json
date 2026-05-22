@@ -50,6 +50,16 @@
     "updatedAt": "2026-05-22"
   },
   {
+    "id": "render-devcentral",
+    "name": "Render — DevCentral",
+    "description": "Painel de deploy e logs do site DevCentral hospedado no Render.",
+    "url": "https://dashboard.render.com/static/srv-d885haegvqtc73efunfg",
+    "visibility": "public",
+    "category": "deploy",
+    "tags": ["render", "deploy", "devcentral"],
+    "updatedAt": "2026-05-22"
+  },
+  {
     "id": "google-cloud-console",
     "name": "Google Cloud Console",
     "description": "Credenciais OAuth e configuracoes do projeto Anluup no Google Cloud.",

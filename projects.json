@@ -6,33 +6,42 @@
     "url": "https://dashboard-matriz-eisenhower.netlify.app/",
     "visibility": "public",
     "tags": ["dashboard", "priorizacao", "eisenhower"],
-    "updatedAt": "2026-05-21"
+    "updatedAt": "2026-05-22"
   },
   {
-    "id": "hidromares-dashboard",
-    "name": "Hidromares Dashboard",
-    "description": "Dashboard operacional de acompanhamento da equipe e chamados.",
-    "url": "https://hidromares-dashboard.netlify.app/",
+    "id": "github-arsgoliveira",
+    "name": "GitHub",
+    "description": "Repositorios pessoais e projetos open source.",
+    "url": "https://github.com/arsgoliveira?tab=repositories",
     "visibility": "public",
-    "tags": ["hidromares", "operacional", "jira"],
-    "updatedAt": "2026-05-21"
+    "tags": ["github", "repositorios", "codigo"],
+    "updatedAt": "2026-05-22"
   },
   {
-    "id": "github-brhidromaresti-repos",
-    "name": "GitHub Brhidromaresti",
-    "description": "Repositorio central e lista de projetos no GitHub da Hidromares TI.",
-    "url": "https://github.com/brhidromaresti?tab=repositories",
+    "id": "chatgpt",
+    "name": "ChatGPT",
+    "description": "Assistente de IA da OpenAI para produtividade e desenvolvimento.",
+    "url": "https://chatgpt.com/",
     "visibility": "public",
-    "tags": ["github", "repositorios", "hidromares"],
-    "updatedAt": "2026-05-21"
+    "tags": ["ia", "produtividade", "openai"],
+    "updatedAt": "2026-05-22"
   },
   {
-    "id": "netlify-brhidromaresti-projects",
-    "name": "Netlify Brhidromaresti",
-    "description": "Painel de projetos da equipe no Netlify.",
-    "url": "https://app.netlify.com/teams/brhidromaresti/projects",
+    "id": "linkedin-arsgoliveira",
+    "name": "LinkedIn",
+    "description": "Perfil profissional e networking.",
+    "url": "https://www.linkedin.com/in/arsgoliveira/",
     "visibility": "public",
-    "tags": ["netlify", "deploy", "projetos"],
-    "updatedAt": "2026-05-21"
+    "tags": ["linkedin", "perfil", "networking"],
+    "updatedAt": "2026-05-22"
+  },
+  {
+    "id": "vercel-projetos",
+    "name": "Vercel",
+    "description": "Painel de deploys e projetos hospedados na Vercel.",
+    "url": "https://vercel.com/arsgoliveiras-projects",
+    "visibility": "public",
+    "tags": ["vercel", "deploy", "hospedagem"],
+    "updatedAt": "2026-05-22"
   }
 ]

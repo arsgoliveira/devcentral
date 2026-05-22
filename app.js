@@ -1,7 +1,7 @@
 ﻿const PROJECTS_URL = "./projects.json";
-const STORAGE_UNLOCKED_KEY = "hm-portal-unlocked-v1";
-const STORAGE_CUSTOM_KEY = "hm-portal-custom-projects-v3";
-const STORAGE_OVERRIDES_KEY = "hm-portal-overrides-v3";
+const STORAGE_UNLOCKED_KEY = "dc-portal-unlocked-v1";
+const STORAGE_CUSTOM_KEY = "dc-portal-custom-projects-v1";
+const STORAGE_OVERRIDES_KEY = "dc-portal-overrides-v1";
 
 const searchInput = document.getElementById("searchInput");
 const grid = document.getElementById("projectsGrid");

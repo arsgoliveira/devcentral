@@ -1,16 +1,15 @@
-# Portal Central Hidromares
+# DevCentral
 
-Portal estatico com um unico link para acessar dashboards e projetos da equipe de TI.
+Painel pessoal para acesso rapido a projetos e ferramentas de desenvolvimento.
 
-## O que esta pronto
+## Funcionalidades
 
 - Busca e filtros (todos, publicos, restritos, desbloqueados)
-- Cadastro simples de novos links no proprio portal
+- Cadastro de novos links diretamente pelo portal
 - Auto-preenchimento de nome/descricao/tags a partir da URL
 - Configuracao de visibilidade (publico ou restrito)
-- Senha simples para projeto restrito
-- Edicao rapida de projetos pelo botao `Configurar`
-- Remocao de projetos personalizados
+- Senha para projetos restritos (SHA-256)
+- Edicao e remocao de projetos personalizados
 
 ## Arquivos
 
@@ -19,32 +18,25 @@ Portal estatico com um unico link para acessar dashboards e projetos da equipe d
 - `app.js`: logica de cadastro, filtros e acesso
 - `projects.json`: projetos iniciais
 
-## Como manter projetos
+## Como adicionar projetos
 
 1. Abra o portal
-2. Clique em `Incluir link`
-3. Cole a URL
-4. Clique em `Preencher automatico`
-5. Defina `Publico` ou `Restrito`
-6. Salve
+2. Clique em `Configuracoes` > `Incluir link`
+3. Cole a URL e clique em `Preencher`
+4. Defina `Publico` ou `Restrito`
+5. Salve
 
-Projetos adicionados pelo painel ficam salvos no navegador (localStorage).
+Projetos adicionados ficam salvos no navegador (localStorage).
 
-## Deploy no Netlify
+## Deploy no Render
 
-### Manual (mais rapido)
-
-1. Netlify -> `Add new site` -> `Deploy manually`
-2. Arraste a pasta inteira deste projeto
-
-### Via Git (recomendado)
-
-1. Suba esta pasta para um repositorio
-2. Netlify -> `Add new site` -> `Import from Git`
-3. Build command: vazio
-4. Publish directory: `/`
+1. Suba esta pasta para um repositorio no GitHub
+2. Render -> `New` -> `Static Site`
+3. Conecte o repositorio
+4. Build command: vazio
+5. Publish directory: `.`
+6. Clique em `Create Static Site`
 
 ## Observacao de seguranca
 
-A protecao por senha aqui e client-side (simples), ideal para organizacao interna.
-Para controle mais forte, o proximo passo e adicionar autenticao real (ex.: Supabase Auth).
+A protecao por senha e client-side (SHA-256), ideal para uso pessoal e organizacao interna.

@@ -16,5 +16,23 @@
     "visibility": "public",
     "tags": ["hidromares", "operacional", "jira"],
     "updatedAt": "2026-05-21"
+  },
+  {
+    "id": "github-brhidromaresti-repos",
+    "name": "GitHub Brhidromaresti",
+    "description": "Repositorio central e lista de projetos no GitHub da Hidromares TI.",
+    "url": "https://github.com/brhidromaresti?tab=repositories",
+    "visibility": "public",
+    "tags": ["github", "repositorios", "hidromares"],
+    "updatedAt": "2026-05-21"
+  },
+  {
+    "id": "netlify-brhidromaresti-projects",
+    "name": "Netlify Brhidromaresti",
+    "description": "Painel de projetos da equipe no Netlify.",
+    "url": "https://app.netlify.com/teams/brhidromaresti/projects",
+    "visibility": "public",
+    "tags": ["netlify", "deploy", "projetos"],
+    "updatedAt": "2026-05-21"
   }
 ]
